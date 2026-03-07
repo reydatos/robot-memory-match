@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Image } from 'react-native';
 import { router } from 'expo-router';
 import Animated, {
   useSharedValue,
@@ -8,10 +8,13 @@ import Animated, {
   withSequence,
   withTiming,
   withDelay,
+  withSpring,
   Easing,
 } from 'react-native-reanimated';
 import { useScores } from '@/hooks/useScores';
 import { COLORS } from '@/constants/theme';
+
+const CARD_BACK_IMAGE = require('../assets/robots/card-back.png');
 
 const FLOATING_ROBOTS = [
   { emoji: '🤖', x: '10%', top: 120, delay: 0 },
@@ -23,6 +26,18 @@ const FLOATING_ROBOTS = [
 
 export default function HomeScreen() {
   const { highScore, loaded } = useScores();
+  const robotScale = useSharedValue(0.8);
+
+  useEffect(() => {
+    robotScale.value = withDelay(
+      200,
+      withSpring(1, { damping: 8, stiffness: 150 }),
+    );
+  }, []);
+
+  const robotStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: robotScale.value }],
+  }));
 
   return (
     <View style={styles.container}>
@@ -31,7 +46,15 @@ export default function HomeScreen() {
       ))}
 
       <View style={styles.content}>
-        <Text style={styles.title}>ROBOT{'\n'}MATCH</Text>
+        <Animated.View style={[styles.heroRobot, robotStyle]}>
+          <Image
+            source={CARD_BACK_IMAGE}
+            style={styles.heroRobotImage}
+            resizeMode="contain"
+          />
+        </Animated.View>
+
+        <Text style={styles.title}>ROBOTO</Text>
         <Text style={styles.subtitle}>Find all the robot pairs!</Text>
 
         {loaded && highScore > 0 && (
@@ -42,8 +65,10 @@ export default function HomeScreen() {
         )}
 
         <Pressable style={styles.playButton} onPress={() => router.push('/game')}>
-          <Text style={styles.playText}>PLAY</Text>
+          <Text style={styles.playText}>START GAME</Text>
         </Pressable>
+
+        <Text style={styles.credit}>by Jon Chu</Text>
       </View>
     </View>
   );
@@ -93,12 +118,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 32,
   },
+  heroRobot: {
+    width: 140,
+    height: 140,
+    marginBottom: 12,
+  },
+  heroRobotImage: {
+    width: '100%',
+    height: '100%',
+  },
   title: {
     fontSize: 64,
     fontWeight: '900',
     color: COLORS.accent,
     textAlign: 'center',
-    lineHeight: 72,
+    letterSpacing: 6,
     textShadowColor: 'rgba(255, 215, 0, 0.3)',
     textShadowOffset: { width: 0, height: 4 },
     textShadowRadius: 12,
@@ -106,13 +140,13 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 20,
     color: COLORS.textSecondary,
-    marginTop: 16,
+    marginTop: 12,
     fontWeight: '600',
   },
   playButton: {
-    marginTop: 48,
+    marginTop: 40,
     backgroundColor: COLORS.buttonPrimary,
-    paddingHorizontal: 64,
+    paddingHorizontal: 56,
     paddingVertical: 18,
     borderRadius: 30,
     shadowColor: COLORS.buttonPrimary,
@@ -122,13 +156,21 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   playText: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: '900',
     color: COLORS.buttonText,
-    letterSpacing: 4,
+    letterSpacing: 3,
+  },
+  credit: {
+    marginTop: 20,
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.textSecondary,
+    opacity: 0.6,
+    fontStyle: 'italic',
   },
   highScoreBadge: {
-    marginTop: 28,
+    marginTop: 24,
     alignItems: 'center',
     backgroundColor: 'rgba(255,215,0,0.1)',
     paddingHorizontal: 24,
