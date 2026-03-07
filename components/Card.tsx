@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Pressable, StyleSheet, Text, View, Image } from 'react-native';
+import { Pressable, StyleSheet, Image } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -11,9 +11,7 @@ import Animated, {
 import { COLORS, CARD } from '@/constants/theme';
 import { ROBOTS } from '@/constants/robots';
 
-const CARD_BACK_IMAGE = {
-  uri: 'https://plus.unsplash.com/premium_photo-1739490456728-711e5bcceba3?w=400&h=400&fit=crop&crop=center&q=80&fm=jpg',
-};
+const CARD_BACK_IMAGE = require('../assets/robots/card-back.png');
 
 type CardProps = {
   robotId: number;
@@ -22,8 +20,6 @@ type CardProps = {
   onPress: () => void;
   size: number;
 };
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function Card({ robotId, isFlipped, isMatched, onPress, size }: CardProps) {
   const rotation = useSharedValue(0);
@@ -99,26 +95,18 @@ export default function Card({ robotId, isFlipped, isMatched, onPress, size }: C
         style={{ width: size, height: size }}
       >
         <Animated.View style={[glowStyle, styles.cardContainer, { width: size, height: size, borderRadius: 12 }]}>
-          {/* Front face (card back - robot image) */}
+          {/* Front face (card back - decorative image) */}
           <Animated.View style={[styles.face, styles.frontFace, frontStyle, { borderRadius: 12 }]}>
             <Image
               source={CARD_BACK_IMAGE}
               style={styles.cardBackImage}
-              resizeMode="cover"
+              resizeMode="contain"
             />
-            <View style={styles.cardBackOverlay} />
           </Animated.View>
 
           {/* Back face (robot reveal) */}
           <Animated.View style={[styles.face, styles.backFace, backStyle, { borderRadius: 12 }]}>
-            {robot.image ? (
-              <Image source={robot.image} style={styles.robotImage} resizeMode="contain" />
-            ) : (
-              <View style={[styles.placeholder, { backgroundColor: robot.placeholderColor }]}>
-                <Text style={styles.placeholderEmoji}>{robot.emoji}</Text>
-                <Text style={styles.placeholderName}>{robot.name}</Text>
-              </View>
-            )}
+            <Image source={robot.image} style={styles.robotImage} resizeMode="contain" />
           </Animated.View>
         </Animated.View>
       </Pressable>
@@ -152,31 +140,8 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 12,
   },
-  cardBackOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(108, 63, 160, 0.35)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 12,
-  },
   robotImage: {
-    width: '80%',
-    height: '80%',
-  },
-  placeholder: {
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 12,
-  },
-  placeholderEmoji: {
-    fontSize: 36,
-  },
-  placeholderName: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#333',
-    marginTop: 4,
+    width: '85%',
+    height: '85%',
   },
 });
