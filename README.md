@@ -1,50 +1,69 @@
-# Welcome to your Expo app 👋
+# Robot Match
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A memory matching card game for kids aged 6-10, built with React Native (Expo).
 
-## Get started
+Flip cards to find matching robot pairs. Score points for matches, and earn bonus points for consecutive matches (streaks).
 
-1. Install dependencies
+## Features
 
-   ```bash
-   npm install
-   ```
+- 4x4 grid with 8 robot pairs (16 cards)
+- 3D card flip animations with React Native Reanimated
+- Streak-based scoring: 1 point per match, 2 points for consecutive matches
+- Persistent high score tracking across sessions
+- Recent game history on the win screen
+- Colorful robot card backs from Unsplash
+- Celebration effects when you win
+- Kid-friendly UI with large touch targets
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Getting Started
 
 ```bash
-npm run reset-project
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Then open with:
+- Expo Go on your phone (scan the QR code)
+- `npx expo start --ios` for iOS simulator
+- `npx expo start --android` for Android emulator
+- `npx expo start --web` for browser preview
 
-## Learn more
+## Adding Custom Robot Images
 
-To learn more about developing your project with Expo, look at the following resources:
+The game ships with emoji placeholders for each robot. To use custom images:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+1. Place 8 PNG files in `assets/robots/` (robot-01.png through robot-08.png)
+2. Update `constants/robots.ts` to reference them:
 
-## Join the community
+```typescript
+{ id: 0, image: require('../assets/robots/robot-01.png'), ... }
+```
 
-Join our community of developers creating universal apps.
+No other code changes needed.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Tech Stack
+
+- [Expo](https://expo.dev) (SDK 54) with expo-router
+- [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/) for animations
+- [AsyncStorage](https://react-native-async-storage.github.io/async-storage/) for score persistence
+- TypeScript
+
+## Project Structure
+
+```
+app/
+  _layout.tsx       Root stack navigator
+  index.tsx         Home screen
+  game.tsx          Game screen
+  win.tsx           Win screen
+components/
+  Card.tsx          Flip card with animations
+  GameBoard.tsx     4x4 card grid
+  Celebration.tsx   Win celebration effects
+hooks/
+  useGameState.ts   Game logic (useReducer)
+  useScores.ts      Score persistence
+constants/
+  theme.ts          Colors, spacing, timing
+  robots.ts         Robot configurations
+```
