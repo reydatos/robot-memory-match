@@ -1,4 +1,6 @@
-# Robot Match
+# Robot Match by Jon Chu.
+
+Feel free to use for all kids alike!
 
 A memory matching card game for kids aged 6-10, built with React Native (Expo).
 
